@@ -7,7 +7,7 @@ const Notifications = () => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const res = await axios.get("http://localhost:5001/api/notifications", {
+        const res = await axios.get("http://localhost:5000/api/notifications", {
           headers: { "x-auth-token": localStorage.getItem("token") },
         });
         setNotifications(res.data);

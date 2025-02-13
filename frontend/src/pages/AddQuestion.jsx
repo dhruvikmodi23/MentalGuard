@@ -24,7 +24,7 @@ const AdminAddQuestion = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5001/api/questions", { questionId, text, options });
+      await axios.post("http://localhost:5000/api/questions", { questionId, text, options });
       alert("Question added successfully");
       setQuestionId("");
       setText("");

@@ -15,7 +15,7 @@ const UserDashboard = () => {
     const fetchAppointments = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:5001/api/appointments/user",
+          "http://localhost:5000/api/appointments/user",
           {
             headers: { "x-auth-token": localStorage.getItem("token") },
           }

@@ -1,17 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const Response = require("../models/Response");
+const authenticateToken = require("../middleware/authenticateToken");
 
-router.post("/api/responses", async (req, res) => {
+router.post("/", authenticateToken, async (req, res) => {
   try {
-    const { userId, responses } = req.body;
+    const { responses } = req.body;
+    console.log(req.body);
 
     const response = new Response({
-      user: userId,
-      responses: {
-        questionId: responses.questionId,
-        answer: responses.answer,
-      },
+      user: req.user._id,
+      responses: responses,
     });
     await response.save();
 

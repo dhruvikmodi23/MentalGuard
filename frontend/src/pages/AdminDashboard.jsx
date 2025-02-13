@@ -25,7 +25,7 @@ const AdminDashboard = () => {
   const fetchAppointments = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5001/api/appointments/admin",
+        "http://localhost:5000/api/appointments/admin",
         {
           headers: {
             "x-auth-token": localStorage.getItem("token"),

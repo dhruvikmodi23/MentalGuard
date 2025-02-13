@@ -9,7 +9,7 @@ const NavigationBar = () => {
         <nav className="bg-blue-900 text-white py-4 shadow-md">
             <div className="container mx-auto flex items-center justify-between px-6">
                 <NavLink to="/" className="text-xl font-bold">
-                    RenewU
+                    MentalGuard
                 </NavLink>
                 <div className="flex items-center space-x-6">
                     <NavLink to="/" className="hover:text-teal-400">Home</NavLink>

@@ -10,7 +10,7 @@ const AdminContactMessages = () => {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const res = await axios.get("http://localhost:5001/api/contact", {
+        const res = await axios.get("http://localhost:5000/api/contact", {
           headers: { "x-auth-token": localStorage.getItem("token") },
         });
         setMessages(res.data);

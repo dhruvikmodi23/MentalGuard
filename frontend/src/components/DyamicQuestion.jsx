@@ -3,16 +3,14 @@ import axios from "axios";
 const DynamicQuestionnaire = () => {
   const [question, setQuestion] = useState(null);
   const [responses, setResponses] = useState([]);
-  const [userId, setUserId] = useState(""); // Mock user ID, replace with actual authentication
 
   useEffect(() => {
     fetchFirstQuestion();
-    setUserId(user._id);
   }, []);
 
   const fetchFirstQuestion = async () => {
     try {
-      const res = await axios.get("http://localhost:5001/api/questions/first");
+      const res = await axios.get(`http://localhost:5000/api/questions/first`);
       setQuestion(res.data);
     } catch (err) {
       console.error("Error fetching question", err);
@@ -25,7 +23,7 @@ const DynamicQuestionnaire = () => {
       return;
     }
     try {
-      const res = await axios.get(`http://localhost:5001/api/questions/${nextQuestionId}`);
+      const res = await axios.get(`http://localhost:5000/api/questions/${nextQuestionId}`);
       setQuestion(res.data);
     } catch (err) {
       console.error("Error fetching next question", err);
@@ -39,7 +37,7 @@ const DynamicQuestionnaire = () => {
 
   const submitResponses = async () => {
     try {
-      const res = await axios.post("http://localhost:5001/api/responses", { userId, responses });
+      const res = await axios.post("http://localhost:5000/api/responses", { responses });
       console.log("AI Response:", res.data.aiResponse);
     } catch (err) {
       console.error("Error submitting responses", err);

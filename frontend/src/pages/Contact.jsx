@@ -20,7 +20,7 @@ const Contact = () => {
     e.preventDefault();
 
     try {
-      await axios.post("http://localhost:5001/api/contact", formData);
+      await axios.post("http://localhost:5000/api/contact", formData);
       toast.success("Message submitted successfully!");
       setFormData({ name: "", email: "", message: "" });
     } catch (error) {

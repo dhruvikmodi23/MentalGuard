@@ -31,7 +31,7 @@ const Appointments = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:5001/api/appointments",
+        "http://localhost:5000/api/appointments",
         formData,
         {
           headers: {
