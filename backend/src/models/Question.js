@@ -1,7 +1,15 @@
 const mongoose = require("mongoose");
+
 const QuestionSchema = new mongoose.Schema({
-    text: String,
-    options: [{ text: String  , nextQuestionId: mongoose.Schema.Types.ObjectId }],
-    require:true
-  });
-  module.exports = mongoose.model("Question", QuestionSchema);
+  questionId: { type: String, required: true, unique: true },
+  text: { type: String, required: true },
+  options: [
+    {
+      text: { type: String, required: true },
+      nextQuestionId: { type: String, required: false },
+    },
+  ],
+});
+
+const Question = mongoose.model("Question", QuestionSchema);
+module.exports = Question;

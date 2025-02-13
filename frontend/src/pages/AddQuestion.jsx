@@ -1,88 +1,87 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const AddQuestion = () => {
-    const [questionText, setQuestionText] = useState("");
-    const [options, setOptions] = useState([{ text: "", nextQuestionId: "" }]);
+const AdminAddQuestion = () => {
+  const [questionId, setQuestionId] = useState("");
+  const [text, setText] = useState("");
+  const [options, setOptions] = useState([{ text: "", nextQuestionId: "" }]);
 
-    const handleOptionChange = (index, field, value) => {
-        const newOptions = [...options];
-        newOptions[index][field] = value;
-        setOptions(newOptions);
-    };
+  const handleOptionChange = (index, field, value) => {
+    const newOptions = [...options];
+    newOptions[index][field] = value;
+    setOptions(newOptions);
+  };
 
-    const addOption = () => {
-        setOptions([...options, { text: "", nextQuestionId: "" }]);
-    };
+  const addOption = () => {
+    setOptions([...options, { text: "", nextQuestionId: "" }]);
+  };
 
-    const removeOption = (index) => {
-        setOptions(options.filter((_, i) => i !== index));
-    };
+  const removeOption = (index) => {
+    const newOptions = options.filter((_, i) => i !== index);
+    setOptions(newOptions);
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            await axios.post("http://localhost:5000/api/questions", {
-                text: questionText,
-                options,
-            });
-            alert("Question added successfully!");
-            setQuestionText("");
-            setOptions([{ text: "", nextQuestionId: "" }]);
-        } catch (error) {
-            console.error("Error adding question", error);
-        }
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post("http://localhost:5001/api/questions", { questionId, text, options });
+      alert("Question added successfully");
+      setQuestionId("");
+      setText("");
+      setOptions([{ text: "", nextQuestionId: "" }]);
+    } catch (err) {
+      console.error("Error adding question", err);
+    }
+  };
 
-    return (
-        <div className="max-w-lg mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
-            <h2 className="text-2xl font-bold mb-4">Add New Question</h2>
-            <form onSubmit={handleSubmit}>
-                <div className="mb-4">
-                    <label className="block text-gray-700 font-bold">Question</label>
-                    <input
-                        type="text"
-                        value={questionText}
-                        onChange={(e) => setQuestionText(e.target.value)}
-                        className="w-full p-2 border rounded mt-1"
-                        required
-                    />
-                </div>
-                {options.map((option, index) => (
-                    <div key={index} className="mb-3">
-                        <label className="block text-gray-700">Option {index + 1}</label>
-                        <input
-                            type="text"
-                            value={option.text}
-                            onChange={(e) => handleOptionChange(index, "text", e.target.value)}
-                            className="w-full p-2 border rounded mt-1"
-                            required
-                        />
-                        <input
-                            type="text"
-                            placeholder="Next Question ID (optional)"
-                            value={option.nextQuestionId}
-                            onChange={(e) => handleOptionChange(index, "nextQuestionId", e.target.value)}
-                            className="w-full p-2 border rounded mt-1"
-                        />
-                        <button
-                            type="button"
-                            onClick={() => removeOption(index)}
-                            className="text-red-500 mt-1"
-                        >
-                            Remove
-                        </button>
-                    </div>
-                ))}
-                <button type="button" onClick={addOption} className="bg-blue-500 text-white px-4 py-2 rounded mt-2">
-                    Add Option
-                </button>
-                <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded mt-4 block">
-                    Save Question
-                </button>
-            </form>
-        </div>
-    );
+  return (
+    <div className="p-6 bg-gray-100 min-h-screen flex flex-col items-center">
+      <form className="bg-white p-6 rounded-lg shadow-md w-full max-w-md" onSubmit={handleSubmit}>
+        <h2 className="text-lg font-semibold mb-4">Add a New Question</h2>
+        <input
+          type="text"
+          placeholder="Question ID"
+          value={questionId}
+          onChange={(e) => setQuestionId(e.target.value)}
+          className="w-full border p-2 rounded mb-2"
+        />
+        <input
+          type="text"
+          placeholder="Question Text"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          className="w-full border p-2 rounded mb-2"
+        />
+        {options.map((option, index) => (
+          <div key={index} className="mb-2">
+            <input
+              type="text"
+              placeholder="Option Text"
+              value={option.text}
+              onChange={(e) => handleOptionChange(index, "text", e.target.value)}
+              className="w-full border p-2 rounded mb-1"
+            />
+            <input
+              type="text"
+              placeholder="Next Question ID"
+              value={option.nextQuestionId}
+              onChange={(e) => handleOptionChange(index, "nextQuestionId", e.target.value)}
+              className="w-full border p-2 rounded mb-1"
+            />
+            <button type="button" className="text-red-500" onClick={() => removeOption(index)}>
+              Remove Option
+            </button>
+          </div>
+        ))}
+        <button type="button" className="bg-blue-500 text-white py-2 px-4 rounded" onClick={addOption}>
+          Add Option
+        </button>
+        <button type="submit" className="bg-green-500 text-white py-2 px-4 rounded mt-4">
+          Save Question
+        </button>
+      </form>
+    </div>
+  );
 };
 
-export default AddQuestion;
+export default AdminAddQuestion;

@@ -1,7 +1,22 @@
 const mongoose = require("mongoose");
+
 const ResponseSchema = new mongoose.Schema({
-    userId: mongoose.Schema.Types.ObjectId,
-    responses: [{ question: String, answer: String }],
-    require:true
-  });
-  module.exports = mongoose.model("Response", ResponseSchema);
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  responses: [
+    {
+      questionId: {
+        type: String,
+        required: true,
+      },
+      answer: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
+});
+module.exports = mongoose.model("Response", ResponseSchema);
