@@ -6,10 +6,9 @@ const authenticateToken = require("../middleware/authenticateToken");
 router.post("/", authenticateToken, async (req, res) => {
   try {
     const { responses } = req.body;
-    console.log(req.body);
 
     const response = new Response({
-      user: req.user._id,
+      user: req.user.id,
       responses: responses,
     });
     await response.save();

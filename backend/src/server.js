@@ -36,7 +36,7 @@ app.use("/api/user", userRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api", chatRoutes);
 app.use("/api/questions", questionRoutes);
-app.use("/api//responses", responseRoutes);
+app.use("/api/responses", responseRoutes);
 
 //app.use("/api/notifications", require("./routes/notifications"));
 

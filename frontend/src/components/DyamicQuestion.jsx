@@ -3,6 +3,7 @@ import axios from "axios";
 const DynamicQuestionnaire = () => {
   const [question, setQuestion] = useState(null);
   const [responses, setResponses] = useState([]);
+  const [userid,setUserid]=useState("");
 
   useEffect(() => {
     fetchFirstQuestion();
@@ -37,7 +38,13 @@ const DynamicQuestionnaire = () => {
 
   const submitResponses = async () => {
     try {
-      const res = await axios.post("http://localhost:5000/api/responses", { responses });
+      const res = await axios.post("http://localhost:5000/api/responses", { responses },
+      {
+        headers: {
+          "x-auth-token": localStorage.getItem("token"),
+        },
+      }
+      );
       console.log("AI Response:", res.data.aiResponse);
     } catch (err) {
       console.error("Error submitting responses", err);
