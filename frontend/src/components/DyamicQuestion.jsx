@@ -11,7 +11,7 @@ const DynamicQuestionnaire = () => {
 
   const fetchFirstQuestion = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/questions/first`);
+      const res = await axios.get(`http://localhost:5001/api/questions/first`);
       setQuestion(res.data);
     } catch (err) {
       console.error("Error fetching question", err);
@@ -24,7 +24,7 @@ const DynamicQuestionnaire = () => {
       return;
     }
     try {
-      const res = await axios.get(`http://localhost:5000/api/questions/${nextQuestionId}`);
+      const res = await axios.get(`http://localhost:5001/api/questions/${nextQuestionId}`);
       setQuestion(res.data);
     } catch (err) {
       console.error("Error fetching next question", err);
@@ -38,7 +38,7 @@ const DynamicQuestionnaire = () => {
 
   const submitResponses = async () => {
     try {
-      const res = await axios.post("http://localhost:5000/api/responses", { responses },
+      const res = await axios.post("http://localhost:5001/api/responses", { responses },
       {
         headers: {
           "x-auth-token": localStorage.getItem("token"),

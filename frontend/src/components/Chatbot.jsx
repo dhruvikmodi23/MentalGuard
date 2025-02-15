@@ -14,7 +14,7 @@ export default function ChatBot() {
             setInput("");
         }
         try {
-            const res = await axios.post('http://localhost:5000/api/chat', { message: input });
+            const res = await axios.post('http://localhost:5001/api/chat', { message: input });
             setMessages([...messages, userMessage, { sender: 'bot', text: res.data.response }]);
         } catch (error) {
             console.error('Error sending message:', error);

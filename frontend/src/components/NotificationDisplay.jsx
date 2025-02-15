@@ -10,7 +10,7 @@ const NotificationDisplay = () => {
         async (_id) => {
             try {
                 await axios.patch(
-                    `http://localhost:5000/api/notifications/${_id}/mark-read`,
+                    `http://localhost:5001/api/notifications/${_id}/mark-read`,
                     {},
                     {
                         headers: { "x-auth-token": localStorage.getItem("token") },

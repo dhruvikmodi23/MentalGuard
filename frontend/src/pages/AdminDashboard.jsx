@@ -25,7 +25,7 @@ const AdminDashboard = () => {
   const fetchAppointments = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/appointments/admin",
+        "http://localhost:5001/api/appointments/admin",
         {
           headers: {
             "x-auth-token": localStorage.getItem("token"),
@@ -49,7 +49,7 @@ const AdminDashboard = () => {
     }
 
     try {
-      await axios.delete(`http://localhost:5000/api/appointments/${id}`, {
+      await axios.delete(`http://localhost:5001/api/appointments/${id}`, {
         headers: { "x-auth-token": localStorage.getItem("token") },
       });
       setAppointments(
@@ -79,7 +79,7 @@ const AdminDashboard = () => {
     const reason = "Approved by admin";
     try {
       await axios.patch(
-        `http://localhost:5000/api/appointments/${id}/approve`,
+        `http://localhost:5001/api/appointments/${id}/approve`,
         { status: "approved", reason },
         {
           headers: { "x-auth-token": localStorage.getItem("token") },
@@ -96,7 +96,7 @@ const AdminDashboard = () => {
   const handleReschedule = async (id) => {
     try {
       await axios.patch(
-        `http://localhost:5000/api/appointments/${id}/reschedule`,
+        `http://localhost:5001/api/appointments/${id}/reschedule`,
         { date: newDate, time: newTime },
         {
           headers: { "x-auth-token": localStorage.getItem("token") },
