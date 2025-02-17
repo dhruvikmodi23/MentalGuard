@@ -5,7 +5,7 @@ const Question = require("../models/Question");
 router.get("/first", async (req, res) => {
   try {
     const firstQuestion = await Question.findOne({
-      questionId: "1",
+      questionId: "q1",
     });
     res.status(201).json(firstQuestion);
   } catch (err) {

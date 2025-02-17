@@ -1,76 +1,145 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-const DynamicQuestionnaire = () => {
+
+const MentalHealthApp = () => {
   const [question, setQuestion] = useState(null);
   const [responses, setResponses] = useState([]);
-  const [userid,setUserid]=useState("");
-
+  const [currentQuestionId, setCurrentQuestionId] = useState("Q1");
+  const [previousQuestions, setPreviousQuestions] = useState([]);
+  const [analysis, setAnalysis] = useState(null);
+  const [chatbotMessage, setChatbotMessage] = useState("");
+  const [userMessage, setUserMessage] = useState("");
+  const [testStopped, setTestStopped] = useState(false);
+  
   useEffect(() => {
-    fetchFirstQuestion();
+    fetchQuestion("q1");
   }, []);
 
-  const fetchFirstQuestion = async () => {
+  const fetchQuestion = async (questionId) => {
     try {
-      const res = await axios.get(`http://localhost:5001/api/questions/first`);
+      const res = await axios.get(`http://localhost:5001/api/questions/${questionId}`);
       setQuestion(res.data);
-    } catch (err) {
-      console.error("Error fetching question", err);
+      console.log(question);
+    } catch (error) {
+      console.error("Error fetching question", error);
     }
   };
 
-  const fetchNextQuestion = async (nextQuestionId) => {
-    if (!nextQuestionId) {
-      submitResponses();
-      return;
-    }
-    try {
-      const res = await axios.get(`http://localhost:5001/api/questions/${nextQuestionId}`);
-      setQuestion(res.data);
-    } catch (err) {
-      console.error("Error fetching next question", err);
+  const handleAnswer = async (answer, nextQuestionId) => {
+    setPreviousQuestions([...previousQuestions, currentQuestionId]);
+    setResponses([...responses, { questionId: currentQuestionId, answer }]);
+    if (nextQuestionId) {
+      setCurrentQuestionId(nextQuestionId);
+      fetchQuestion(nextQuestionId);
+    } else {
+      await submitResponses();
     }
   };
 
-  const handleAnswer = (answer, nextQuestionId) => {
-    setResponses([...responses, { questionId: question.questionId, answer }]);
-    fetchNextQuestion(nextQuestionId);
+  const handlePrevious = () => {
+    if (previousQuestions.length > 0) {
+      const lastQuestionId = previousQuestions.pop();
+      setCurrentQuestionId(lastQuestionId);
+      fetchQuestion(lastQuestionId);
+      setResponses(responses.slice(0, -1));
+    }
+  };
+
+  const handleStopTest = () => {
+    setTestStopped(true);
+    submitResponses();
   };
 
   const submitResponses = async () => {
     try {
-      const res = await axios.post("http://localhost:5001/api/responses", { responses },
-      {
-        headers: {
-          "x-auth-token": localStorage.getItem("token"),
-        },
-      }
-      );
-      console.log("AI Response:", res.data.aiResponse);
-    } catch (err) {
-      console.error("Error submitting responses", err);
+      await axios.post("http://localhost:5001/api/responses", {
+        responses,
+      });
+      //fetchAIAnalysis();
+    } catch (error) {
+      console.error("Error submitting responses", error);
+    }
+  };
+
+  const fetchAIAnalysis = async () => {
+    try {
+      const res = await axios.post("http://localhost:5000/ai-analysis", {
+        userId: "user123",
+      });
+      setAnalysis(res.data.insights);
+    } catch (error) {
+      console.error("Error fetching AI analysis", error);
+    }
+  };
+
+  const handleChatbotMessage = async () => {
+    try {
+      const res = await axios.get(`https://api.monkedev.com/fun/chat?msg=${encodeURIComponent(userMessage)}`);
+      setChatbotMessage(res.data.response);
+      setUserMessage("");
+    } catch (error) {
+      console.error("Error communicating with chatbot", error);
     }
   };
 
   return (
-    <div className="flex flex-col items-center p-6 bg-gray-100 min-h-screen">
-      {question ? (
-        <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
-          <h2 className="text-lg font-semibold mb-4">{question.text}</h2>
-          {question.options.map((option, index) => (
+    <div className="p-4 max-w-lg mx-auto bg-white shadow-lg rounded-lg">
+      <h1 className="text-xl font-bold">Mental Health Assessment</h1>
+      {!testStopped && question && (
+        <div>
+          <p className="text-lg mt-4">{question.text}</p>
+          <div className="mt-4">
+            {question.options.map((opt, index) => (
+              <button
+                key={index}
+                onClick={() => handleAnswer(opt.text, opt.nextQuestionId)}
+                className="block w-full h-16 mt-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                {opt.text}
+              </button>
+            ))}
+          </div>
+          {previousQuestions.length > 0 && (
             <button
-              key={index}
-              className="w-full bg-blue-500 text-white py-2 px-4 mb-2 rounded hover:bg-blue-600"
-              onClick={() => handleAnswer(option.text, option.nextQuestionId)}
+              onClick={handlePrevious}
+              className="mt-2 p-2 bg-gray-500 text-white rounded hover:bg-gray-600"
             >
-              {option.text}
+              Previous Question
             </button>
-          ))}
+          )}
+          <button
+            onClick={handleStopTest}
+            className="mt-2 p-2 bg-red-500 text-white rounded hover:bg-red-600"
+          >
+            Stop Test
+          </button>
         </div>
-      ) : (
-        <p>Loading questions...</p>
       )}
+      {analysis && (
+        <div className="mt-4 p-4 bg-gray-100 rounded">
+          <h2 className="text-lg font-bold">AI Analysis</h2>
+          <p>{analysis}</p>
+        </div>
+      )}
+      <div className="mt-4 p-4 bg-gray-100 rounded">
+        <h2 className="text-lg font-bold">Chatbot Support</h2>
+        <input
+          type="text"
+          value={userMessage}
+          onChange={(e) => setUserMessage(e.target.value)}
+          placeholder="Ask something..."
+          className="w-full p-2 border rounded"
+        />
+        <button
+          onClick={handleChatbotMessage}
+          className="mt-2 p-2 bg-green-500 text-white rounded hover:bg-green-600"
+        >
+          Send
+        </button>
+        {chatbotMessage && <p className="mt-2 p-2 bg-white rounded">{chatbotMessage}</p>}
+      </div>
     </div>
   );
 };
 
-export default DynamicQuestionnaire;
+export default MentalHealthApp;
