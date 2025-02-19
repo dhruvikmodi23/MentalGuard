@@ -8,7 +8,7 @@ const ResponseSchema = new mongoose.Schema({
   },
   responses: [
     {
-      questionId: {
+      questiontext: {
         type: String,
         required: true,
       },

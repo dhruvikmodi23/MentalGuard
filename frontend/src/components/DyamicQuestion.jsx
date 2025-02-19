@@ -15,25 +15,46 @@ const MentalHealthApp = () => {
     fetchQuestion("q1");
   }, []);
 
-  const fetchQuestion = async (questionId) => {
+  // const fetchNextQuestion = async (nextQuestionId) => {
+  //   if (!nextQuestionId) {
+  //     submitResponses();
+  //     return;
+  //   }
+  //   try {
+  //     const res = await axios.get(`http://localhost:5001/api/questions/${nextQuestionId}`);
+  //     setQuestion(res.data);
+  //   } catch (err) {
+  //     console.error("Error fetching next question", err);
+  //   }
+  // };
+
+
+  const fetchQuestion = async (nextQuestionId) => {
+    // try {
+    //   const res = await axios.get(`http://localhost:5001/api/questions/${questionId}`);
+    //   setQuestion(res.data);
+    //   console.log(question);
+    // } catch (error) {
+    //   console.error("Error fetching question", error);
+    // }
+    if (nextQuestionId=="") {
+      handleStopTest();
+      return;
+    }
     try {
-      const res = await axios.get(`http://localhost:5001/api/questions/${questionId}`);
+      const res = await axios.get(`http://localhost:5001/api/questions/${nextQuestionId}`);
       setQuestion(res.data);
       console.log(question);
-    } catch (error) {
-      console.error("Error fetching question", error);
+    } catch (err) {
+      console.error("Error fetching next question", err);
     }
   };
 
   const handleAnswer = async (answer, nextQuestionId) => {
     setPreviousQuestions([...previousQuestions, currentQuestionId]);
-    setResponses([...responses, { questionId: currentQuestionId, answer }]);
-    if (nextQuestionId) {
-      setCurrentQuestionId(nextQuestionId);
-      fetchQuestion(nextQuestionId);
-    } else {
-      await submitResponses();
-    }
+    setResponses([...responses, { questiontext:question.text, answer }]);
+    setCurrentQuestionId(nextQuestionId);
+    fetchQuestion(nextQuestionId);
   };
 
   const handlePrevious = () => {
@@ -52,9 +73,14 @@ const MentalHealthApp = () => {
 
   const submitResponses = async () => {
     try {
-      await axios.post("http://localhost:5001/api/responses", {
-        responses,
-      });
+      await axios.post("http://localhost:5001/api/responses", { responses },
+      {
+        headers: {
+          "x-auth-token": localStorage.getItem("token"),
+        },
+      }
+      );
+      console.log("response submitted");
       //fetchAIAnalysis();
     } catch (error) {
       console.error("Error submitting responses", error);

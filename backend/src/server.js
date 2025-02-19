@@ -41,7 +41,7 @@ app.use("/api/responses", responseRoutes);
 //app.use("/api/notifications", require("./routes/notifications"));
 
 // Start server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 //console.log("JWT_SECRET:", process.env.JWT_SECRET);
