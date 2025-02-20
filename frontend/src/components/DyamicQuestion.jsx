@@ -81,7 +81,7 @@ const MentalHealthApp = () => {
       }
       );
       console.log("response submitted");
-      //fetchAIAnalysis();
+      fetchAIAnalysis();
     } catch (error) {
       console.error("Error submitting responses", error);
     }
@@ -89,24 +89,22 @@ const MentalHealthApp = () => {
 
   const fetchAIAnalysis = async () => {
     try {
-      const res = await axios.post("http://localhost:5000/ai-analysis", {
-        userId: "user123",
-      });
-      setAnalysis(res.data.insights);
+      const res = await axios.post("http://localhost:5001/api/responses/ai-analysis", {responses});
+      setAnalysis(res);
     } catch (error) {
       console.error("Error fetching AI analysis", error);
     }
   };
 
-  const handleChatbotMessage = async () => {
-    try {
-      const res = await axios.get(`https://api.monkedev.com/fun/chat?msg=${encodeURIComponent(userMessage)}`);
-      setChatbotMessage(res.data.response);
-      setUserMessage("");
-    } catch (error) {
-      console.error("Error communicating with chatbot", error);
-    }
-  };
+  // const handleChatbotMessage = async () => {
+  //   try {
+  //     const res = await axios.get(`https://api.monkedev.com/fun/chat?msg=${encodeURIComponent(userMessage)}`);
+  //     setChatbotMessage(res.data.response);
+  //     setUserMessage("");
+  //   } catch (error) {
+  //     console.error("Error communicating with chatbot", error);
+  //   }
+  // };
 
   return (
     <div className="p-4 max-w-lg mx-auto bg-white shadow-lg rounded-lg">
@@ -147,7 +145,7 @@ const MentalHealthApp = () => {
           <p>{analysis}</p>
         </div>
       )}
-      <div className="mt-4 p-4 bg-gray-100 rounded">
+      {/* <div className="mt-4 p-4 bg-gray-100 rounded">
         <h2 className="text-lg font-bold">Chatbot Support</h2>
         <input
           type="text"
@@ -163,7 +161,7 @@ const MentalHealthApp = () => {
           Send
         </button>
         {chatbotMessage && <p className="mt-2 p-2 bg-white rounded">{chatbotMessage}</p>}
-      </div>
+      </div> */}
     </div>
   );
 };
