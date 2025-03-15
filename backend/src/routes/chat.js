@@ -8,13 +8,14 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 router.post("/chat", async (req, res) => {
     try {
         const { message } = req.body;
+        console.log(message);
 
         if (!message) {
             return res.status(400).json({ error: "Message is required" });
         }
 
         const response = await axios.post(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyB37sruXggjk8JE9L3KAA9ZS2XiNuL74HI`,
             { contents: [{ parts: [{ text: message }] }] }
         );
 
