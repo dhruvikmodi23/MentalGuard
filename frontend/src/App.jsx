@@ -28,10 +28,12 @@ import "./App.css";
 import ChatBot from "./components/Chatbot";
 import DynamicQuestionnaire from "./components/DyamicQuestion";
 import AddQuestion from "./pages/AddQuestion";
+import VideoCall from "./pages/VideoCall";
+import { v4 as uuidV4 } from "uuid";
 
 const App = () => {
   const { isAuthenticated, isAdmin } = useContext(AuthContext);
-
+  const roomId = uuidV4();
   return (
     <NotificationProvider>
       <NotificationDisplay />
@@ -91,6 +93,16 @@ const App = () => {
                 <UserDashboard />
               ) : (
                 <Navigate to="/user/dashboard" />
+              )
+            }
+          />
+          <Route
+            path="/video"
+            element={
+              isAuthenticated ? (
+                <VideoCall roomId={roomId}/>
+              ) : (
+                <Navigate to="/video" />
               )
             }
           />

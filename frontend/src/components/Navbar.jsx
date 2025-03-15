@@ -42,6 +42,10 @@ const NavigationBar = () => {
                             <NavLink to="/workshops" className="hover:text-teal-400">
                                 Workshops
                             </NavLink>
+                            <NavLink to="/video" className="hover:text-teal-400">
+                                Videocall
+                            </NavLink>
+                            
                             {isAdmin ? (
                                 <NavLink to="/admin/dashboard" className="hover:text-teal-400">
                                     Admin Portal
