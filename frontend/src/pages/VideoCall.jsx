@@ -56,7 +56,7 @@ const VideoCall = ({ roomId, onLeave }) => {
 
       socket.emit("join-room", { roomId, userId: user.id, role });
 
-      socket.on("start-call", async () => {
+      socket.on("start-call", async () => { 
         setIsConnected(true);
         if (role === "User") {
           const offer = await peerConnection.current.createOffer();
