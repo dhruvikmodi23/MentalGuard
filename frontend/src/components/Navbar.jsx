@@ -42,9 +42,15 @@ const NavigationBar = () => {
                             <NavLink to="/workshops" className="hover:text-teal-400">
                                 Workshops
                             </NavLink>
-                            <NavLink to="/video" className="hover:text-teal-400">
-                                Videocall
-                            </NavLink>
+                            {isAdmin ? (
+                                <NavLink to="/admin/video" className="hover:text-teal-400">
+                                    Videocall
+                                </NavLink>
+                            ) : (
+                                <NavLink to="/user/video" className="hover:text-teal-400">
+                                    Videocall
+                                </NavLink>
+                            )}
                             
                             {isAdmin ? (
                                 <NavLink to="/admin/dashboard" className="hover:text-teal-400">
@@ -62,6 +68,11 @@ const NavigationBar = () => {
                             ) : (
                                 <NavLink to="/user/test" className="hover:text-teal-400">
                                     Test
+                                </NavLink>
+                            )}
+                            {!isAdmin && (
+                                <NavLink to="/upg" className="hover:text-teal-400">
+                                    Upgrade Now
                                 </NavLink>
                             )}
                             <button

@@ -5,7 +5,7 @@ import { FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash, FaPhoneSlash, F
 
 const socket = io("http://localhost:5001"); // Backend server URL
 
-const VideoCall = ({ roomId, onLeave }) => {
+const AdminVideoCall = ({ roomId}) => {
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
   const peerConnection = useRef(null);
@@ -23,7 +23,7 @@ const VideoCall = ({ roomId, onLeave }) => {
 
   useEffect(() => {
     if (!user) return;
-    setRole(isAdmin ? "Admin" : "User");
+    setRole("Admin");
   }, [user, isAdmin]);
 
   const startCall = async () => {
@@ -193,4 +193,4 @@ const VideoCall = ({ roomId, onLeave }) => {
   );
 };
 
-export default VideoCall;
+export default AdminVideoCall;

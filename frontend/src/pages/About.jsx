@@ -41,9 +41,9 @@ const About = () => {
       <div className="max-w-4xl mx-auto text-center mt-16">
         <h2 className="text-3xl font-bold mb-6">Our Team</h2>
         <div className="space-y-6">
-          <div className="text-lg font-medium">Ismail Kalvani - Lead Counselor</div>
-          <div className="text-lg font-medium">Tofik Vepari - Workshop Coordinator</div>
-          <div className="text-lg font-medium">Megha Macchi - Workshop Coordinator</div>
+          <div className="text-lg font-medium">Dhruvik Modi - Lead Counselor</div>
+          <div className="text-lg font-medium">Dhruval Mehta - Workshop Coordinator</div>
+          <div className="text-lg font-medium">Pruthvirajsinh Parmar - Workshop Coordinator</div>
         </div>
       </div>
     </div>

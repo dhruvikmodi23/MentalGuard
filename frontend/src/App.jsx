@@ -1,5 +1,4 @@
-// src/App.js
-import React, { useContext } from "react";
+import React, { useContext,useState } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -28,12 +27,13 @@ import "./App.css";
 import ChatBot from "./components/Chatbot";
 import DynamicQuestionnaire from "./components/DyamicQuestion";
 import AddQuestion from "./pages/AddQuestion";
-import VideoCall from "./pages/VideoCall";
-import { v4 as uuidV4 } from "uuid";
+import UserVideoCall from "./pages/UserVideoCall";
+import AdminVideoCall from "./pages/AdminVideoCall";
+import PremiumPage from "./pages/Premium";
 
 const App = () => {
   const { isAuthenticated, isAdmin } = useContext(AuthContext);
-  const roomId = uuidV4();
+  const [roomId, setRoomId] = useState("testRoom123");
   return (
     <NotificationProvider>
       <NotificationDisplay />
@@ -73,12 +73,42 @@ const App = () => {
             }
           />
           <Route
+            path="/upg"
+            element={
+              isAuthenticated && !isAdmin ? (
+                <PremiumPage/>
+              ) : (
+                <Navigate to="/upg" />
+              )
+            }
+          />
+          <Route
+            path="/user/video"
+            element={
+              isAuthenticated && !isAdmin ? (
+                <UserVideoCall roomId={roomId}/>
+              ) : (
+                <Navigate to="user/video" />
+              )
+            }
+          />
+          <Route
             path="/admin/question"
             element={
               isAuthenticated && isAdmin ? (
                 <AddQuestion />
               ) : (
                 <Navigate to="/admin/question" />
+              )
+            }
+          />
+          <Route
+            path="/admin/video"
+            element={
+              isAuthenticated && isAdmin ? (
+                <AdminVideoCall roomId={roomId}/>
+              ) : (
+                <Navigate to="/admin/video" />
               )
             }
           />
@@ -93,16 +123,6 @@ const App = () => {
                 <UserDashboard />
               ) : (
                 <Navigate to="/user/dashboard" />
-              )
-            }
-          />
-          <Route
-            path="/video"
-            element={
-              isAuthenticated ? (
-                <VideoCall roomId={roomId}/>
-              ) : (
-                <Navigate to="/video" />
               )
             }
           />
