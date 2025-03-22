@@ -1,12 +1,12 @@
 import React, { useState, useContext } from "react";
 import axios from "axios";
-import { CheckCircle } from "lucide-react";
-import { AuthContext } from "../context/AuthContext"; // Ensure this exists
+import { CheckCircle } from 'lucide-react';
+import { AuthContext } from "../context/AuthContext";
 import toast from "react-hot-toast";
 
 const Payment = () => {
   const [loading, setLoading] = useState(false);
-  const { user, setUser } = useContext(AuthContext); // Using Context API
+  const { user, setUser, setIsPremium } = useContext(AuthContext);
 
   if (!user) {
     toast.error("User not found! Please log in.");
@@ -18,8 +18,6 @@ const Payment = () => {
       </div>
     );
   }
-
-  const userId = user._id;
 
   // Function to dynamically load Razorpay SDK
   const loadRazorpay = () => {
@@ -45,32 +43,37 @@ const Payment = () => {
         throw new Error("Failed to load Razorpay SDK. Please check your internet connection.");
       }
 
+      // Correct order of parameters: URL, data, config
       const res = await axios.post(
-        "http://localhost:5001/api/payment/create-order", // Amount in INR
+        "http://localhost:5001/api/payment/create-order",
+        { amount: 499 }, // Amount in INR - Changed to match your UI (₹799)
         {
           headers: {
             "x-auth-token": localStorage.getItem("token"),
           }
-        },
-        { amount: 500 },
+        }
       );
 
-      if (!res.data.data.order) {
+      if (!res.data || !res.data.success || !res.data.order) {
         throw new Error("Invalid order response from server.");
       }
 
       const options = {
-        key: "",
-        amount: res.data.data.order.amount * 100,
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        amount: res.data.order.amount, // Amount is already in paise from backend
         currency: "INR",
         name: "MentalGuard",
         description: "Premium Membership",
-        order_id: res.data.data.order.id,
+        order_id: res.data.order.id,
         handler: async function (response) {
           try {
             const verifyResponse = await axios.post(
               "http://localhost:5001/api/payment/verify-payment",
-              { ...response, userId },
+              { 
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature
+              },
               {
                 headers: {
                   "x-auth-token": localStorage.getItem("token"),
@@ -79,9 +82,9 @@ const Payment = () => {
             );
 
             if (verifyResponse.data.success) {
-              const updatedUser = { ...user, isPremium: true };
-              setUser(updatedUser); // Update user in Context API
-
+              // Update user in Context API
+              setUser({ ...user, isPremium: true });
+              setIsPremium(true);
               toast.success("Payment Successful! 🎉");
             } else {
               toast.error("Payment verification failed. Please contact support.");

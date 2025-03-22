@@ -3,7 +3,7 @@ import { AuthContext } from "../context/AuthContext";
 import { NavLink } from "react-router-dom";
 
 const NavigationBar = () => {
-    const { isAuthenticated, isAdmin, logout, user } = useContext(AuthContext);
+    const { isAuthenticated, isAdmin, logout, user,isPremium } = useContext(AuthContext);
 
     return (
         <nav className="bg-blue-900 text-white py-4 shadow-md">
@@ -26,12 +26,12 @@ const NavigationBar = () => {
                     )}
                     {isAuthenticated ? (
                         <>
-                            {!isAdmin && (
+                            {!isAdmin && isPremium &&(
                                 <NavLink to="/appointments" className="hover:text-teal-400">
                                     Appointments
                                 </NavLink>
                             )}
-                            {!isAdmin && (
+                            {!isAdmin && isPremium && (
                                 <NavLink to="/chat" className="hover:text-teal-400">
                                     Chat
                                 </NavLink>
@@ -42,21 +42,25 @@ const NavigationBar = () => {
                             <NavLink to="/workshops" className="hover:text-teal-400">
                                 Workshops
                             </NavLink>
-                            {isAdmin ? (
+                            {isAdmin && (
                                 <NavLink to="/admin/video" className="hover:text-teal-400">
                                     Videocall
                                 </NavLink>
-                            ) : (
+                            )}
+                            
+                            {!isAdmin && isPremium && (
                                 <NavLink to="/user/video" className="hover:text-teal-400">
                                     Videocall
                                 </NavLink>
                             )}
                             
-                            {isAdmin ? (
+                            {isAdmin && (
                                 <NavLink to="/admin/dashboard" className="hover:text-teal-400">
                                     Admin Portal
                                 </NavLink>
-                            ) : (
+                            )}
+                            
+                            {!isAdmin && isPremium &&(
                                 <NavLink to="/user/dashboard" className="hover:text-teal-400">
                                     MyAppointments
                                 </NavLink>
@@ -70,7 +74,7 @@ const NavigationBar = () => {
                                     Test
                                 </NavLink>
                             )}
-                            {!isAdmin && (
+                            {!isAdmin && !isPremium && (
                                 <NavLink to="/upg" className="hover:text-teal-400">
                                     Upgrade Now
                                 </NavLink>
