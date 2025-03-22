@@ -2,9 +2,12 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const OAuth2Client = require("google-auth-library");
 const authenticateToken = require("../middleware/authenticateToken");
 
 const router = express.Router();
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 // Register route
 router.post("/register", async (req, res) => {
   const { name, email, password } = req.body; // Only receive name, email, password from frontend
@@ -18,7 +21,7 @@ router.post("/register", async (req, res) => {
     }
 
     // Default isAdmin to false when registering from this route
-    user = new User({ name, email, password, isAdmin: false, isPremium: false, });
+    user = new User({ name, email, password, isAdmin: false, isPremium: false, googleId : null });
 
     await user.save();
 
@@ -51,8 +54,9 @@ router.post("/google", async (req, res) => {
   console.log("Inside Google controller");
 
   const { name, email, password, token } = req.body;
+
   console.log("Received token:", token);
-  console.log("Received role:", role);
+  // console.log("Received role:", role);
 
   try {
       // Verify Google ID Token
@@ -61,7 +65,7 @@ router.post("/google", async (req, res) => {
           audience: process.env.GOOGLE_CLIENT_ID,
       });
 
-      const { email, name, picture, sub: googleId } = ticket.getPayload();
+      const { email, name, sub:googleId } = ticket.getPayload();
 
       // Check if user exists
       let user = await User.findOne({ email });
@@ -71,18 +75,14 @@ router.post("/google", async (req, res) => {
           user = new User({
               googleId,
               email,
-              username: name, // Use Google Name as Username
-              fullname: name, // Store Full Name
-              avatar: picture, // Store Google Profile Picture
+              name: name, // Use Google Name as Username
               password: null, // No password needed for Google Auth
-              role, // Additional fields
-              bio,
-              location,
-              qualifications,
-              experience,
+              isAdmin: false,
+              isPremium: false,
           });
           await user.save();
-      } else if (!user.googleId) {
+      }
+      if (!user.googleId) {
           // If user exists but was created with email/password, update googleId
           user.googleId = googleId;
           await user.save();
