@@ -29,7 +29,8 @@ import DynamicQuestionnaire from "./components/DyamicQuestion";
 import AddQuestion from "./pages/AddQuestion";
 import UserVideoCall from "./pages/UserVideoCall";
 import AdminVideoCall from "./pages/AdminVideoCall";
-import PremiumPage from "./pages/Premium";
+// import PremiumPage from "./pages/Premium";
+import Payment from "./pages/Payment";
 
 const App = () => {
   const { isAuthenticated, isAdmin } = useContext(AuthContext);
@@ -76,7 +77,7 @@ const App = () => {
             path="/upg"
             element={
               isAuthenticated && !isAdmin ? (
-                <PremiumPage/>
+                <Payment/>
               ) : (
                 <Navigate to="/upg" />
               )

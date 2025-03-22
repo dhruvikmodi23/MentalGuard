@@ -17,8 +17,17 @@ const UserSchema = new mongoose.Schema({
     required: true,
   },
   isAdmin: {
-        type: Boolean,
+    type: Boolean,
     default: false,
+  },
+  isPremium: { 
+    type: Boolean, 
+    default: false 
+  },
+  googleId: { 
+    type: String,
+    unique: true,
+    sparse: true 
   },
   date: {
     type: Date,

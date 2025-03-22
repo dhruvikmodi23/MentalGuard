@@ -12,6 +12,7 @@ const contactRoutes = require("./routes/contact");
 const chatRoutes = require("./routes/chat");
 const questionRoutes = require("./routes/question");
 const responseRoutes = require("./routes/response");
+const paymentRoutes = require("./routes/payment");
 dotenv.config();
 
 const app = express();
@@ -47,6 +48,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api", chatRoutes);
 app.use("/api/questions", questionRoutes);
 app.use("/api/responses", responseRoutes);
+app.use("/api/payment", paymentRoutes);
 
 //app.use("/api/notifications", require("./routes/notifications"));
 

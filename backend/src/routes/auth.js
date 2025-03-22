@@ -18,7 +18,7 @@ router.post("/register", async (req, res) => {
     }
 
     // Default isAdmin to false when registering from this route
-    user = new User({ name, email, password, isAdmin: false });
+    user = new User({ name, email, password, isAdmin: false, isPremium: false, });
 
     await user.save();
 
@@ -28,6 +28,7 @@ router.post("/register", async (req, res) => {
         name: user.name, // Include name in the payload
         email: user.email,
         isAdmin: user.isAdmin,
+        isPremium: user.isPremium,
       },
     };
 
@@ -44,6 +45,83 @@ router.post("/register", async (req, res) => {
     res.status(500).send("Server error");
   }
 });
+
+
+router.post("/google", async (req, res) => {
+  console.log("Inside Google controller");
+
+  const { name, email, password, token } = req.body;
+  console.log("Received token:", token);
+  console.log("Received role:", role);
+
+  try {
+      // Verify Google ID Token
+      const ticket = await client.verifyIdToken({
+          idToken: token,
+          audience: process.env.GOOGLE_CLIENT_ID,
+      });
+
+      const { email, name, picture, sub: googleId } = ticket.getPayload();
+
+      // Check if user exists
+      let user = await User.findOne({ email });
+
+      if (!user) {
+          // Create new user (Sign Up)
+          user = new User({
+              googleId,
+              email,
+              username: name, // Use Google Name as Username
+              fullname: name, // Store Full Name
+              avatar: picture, // Store Google Profile Picture
+              password: null, // No password needed for Google Auth
+              role, // Additional fields
+              bio,
+              location,
+              qualifications,
+              experience,
+          });
+          await user.save();
+      } else if (!user.googleId) {
+          // If user exists but was created with email/password, update googleId
+          user.googleId = googleId;
+          await user.save();
+      }
+
+      // Generate JWT access & refresh tokens
+      // Save refresh token to user document
+      const payload = {
+        user: {
+          id: user.id,
+          name: user.name, // Include name in the payload
+          email: user.email,
+          isAdmin: user.isAdmin,
+          isPremium: user.isPremium,
+        },
+      };
+  
+      jwt.sign(
+        payload,
+        process.env.JWT_SECRET,
+        { expiresIn: "1h" },
+        (err, token) => {
+          if (err) res.status(500).send("Server error");
+          res.json({ token });
+        }
+      );
+      // Send response
+      res.json({
+          message: user.googleId ? "Login Successful" : "Sign-Up Successful",
+          accessToken,
+          refreshToken,
+          user,
+      });
+  } catch (error) {
+      console.error("Google authentication error:", error);
+      res.status(500).json({ error: "Google authentication failed" });
+  }
+}
+);
 
 // Login User
 router.post("/login", async (req, res) => {
