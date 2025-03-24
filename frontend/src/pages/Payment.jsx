@@ -132,7 +132,7 @@ const Payment = () => {
             <p className="text-center text-gray-500 text-sm">
               Get access to exclusive features by becoming a premium member.
             </p>
-            <p className="text-2xl font-semibold text-center text-blue-600">₹799 / Month</p>
+            <p className="text-2xl font-semibold text-center text-blue-600">₹499</p>
             <button
               onClick={handlePayment}
               disabled={loading}

@@ -2,7 +2,7 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
-const OAuth2Client = require("google-auth-library");
+const {OAuth2Client} = require("google-auth-library");
 const authenticateToken = require("../middleware/authenticateToken");
 
 const router = express.Router();
